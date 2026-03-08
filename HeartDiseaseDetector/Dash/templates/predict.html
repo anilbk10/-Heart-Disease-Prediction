@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heart Disease Prediction</title>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+            color: #e5e7eb;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+        }
+        .shell {
+            width: 100%;
+            max-width: 1120px;
+            display: flex;
+            padding: 2.5rem 2rem;
+            gap: 2rem;
+        }
+        .panel {
+            background: rgba(15, 23, 42, 0.96);
+            border-radius: 1.25rem;
+            padding: 1.75rem 1.75rem 1.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+        }
+        .panel.form-panel {
+            flex: 3;
+        }
+        .panel.result-panel {
+            flex: 2;
+        }
+        h1 {
+            margin: 0 0 0.4rem;
+            font-size: 1.55rem;
+        }
+        .subtitle {
+            margin: 0 0 1.6rem;
+            font-size: 0.9rem;
+            color: #9ca3af;
+        }
+        form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.1rem 1.5rem;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: #9ca3af;
+            margin-bottom: 0.2rem;
+        }
+        input {
+            border-radius: 0.7rem;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.85);
+            color: #e5e7eb;
+            padding: 0.55rem 0.75rem;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.13s ease-out, box-shadow 0.13s ease-out, background 0.13s ease-out;
+        }
+        input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.7);
+            background: rgba(15, 23, 42, 1);
+        }
+        .actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.8rem;
+        }
+        .primary-button, .ghost-button {
+            border-radius: 999px;
+            border: none;
+            padding: 0.7rem 1.6rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .primary-button {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #ecfdf5;
+            box-shadow: 0 14px 35px rgba(34, 197, 94, 0.65);
+        }
+        .primary-button:hover {
+            filter: brightness(1.05);
+        }
+        .ghost-button {
+            background: transparent;
+            color: #9ca3af;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            text-decoration: none;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(23, 37, 84, 0.9);
+            border: 1px solid rgba(129, 140, 248, 0.6);
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .result-title {
+            font-size: 1.1rem;
+            margin: 0.2rem 0 0.6rem;
+        }
+        .result-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .result-pill.negative {
+            background: rgba(22, 163, 74, 0.12);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.7);
+        }
+        .result-pill.positive {
+            background: rgba(248, 113, 113, 0.08);
+            color: #fca5a5;
+            border: 1px solid rgba(248, 113, 113, 0.8);
+        }
+        .result-note {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            line-height: 1.5;
+        }
+        .error {
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.7rem;
+            border-radius: 0.6rem;
+            background: rgba(248, 113, 113, 0.12);
+            color: #fecaca;
+            font-size: 0.8rem;
+            border: 1px solid rgba(248, 113, 113, 0.5);
+        }
+        .hint {
+            margin-top: 0.6rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        @media (max-width: 900px) {
+            .shell {
+                flex-direction: column;
+                padding: 1.5rem 1rem;
+            }
+            .panel {
+                padding: 1.4rem 1.4rem 1.2rem;
+            }
+            form {
+                grid-template-columns: 1fr;
+            }
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.6rem;
+            }
+            .actions .primary-button,
+            .actions .ghost-button {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <section class="panel form-panel">
+        <h1>Enter clinical features</h1>
+        <p class="subtitle">
+            These inputs mirror the columns of the UCI Heart Disease dataset.
+            All values should be numeric.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <label for="age">Age (years)</label>
+                <input type="number" step="1" id="age" name="age" value="{{ form_data.age|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="sex">Sex (1 = male, 0 = female)</label>
+                <input type="number" step="1" id="sex" name="sex" value="{{ form_data.sex|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="cp">Chest pain type (0–3)</label>
+                <input type="number" step="1" id="cp" name="cp" value="{{ form_data.cp|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="trestbps">Resting blood pressure (mm Hg)</label>
+                <input type="number" step="1" id="trestbps" name="trestbps" value="{{ form_data.trestbps|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="chol">Serum cholesterol (mg/dl)</label>
+                <input type="number" step="1" id="chol" name="chol" value="{{ form_data.chol|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="fbs">Fasting blood sugar &gt; 120 mg/dl (1 = true, 0 = false)</label>
+                <input type="number" step="1" id="fbs" name="fbs" value="{{ form_data.fbs|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="restecg">Resting ECG results (0–2)</label>
+                <input type="number" step="1" id="restecg" name="restecg" value="{{ form_data.restecg|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="thalach">Max heart rate achieved</label>
+                <input type="number" step="1" id="thalach" name="thalach" value="{{ form_data.thalach|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="exang">Exercise-induced angina (1 = yes, 0 = no)</label>
+                <input type="number" step="1" id="exang" name="exang" value="{{ form_data.exang|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="oldpeak">ST depression induced by exercise</label>
+                <input type="number" step="0.1" id="oldpeak" name="oldpeak" value="{{ form_data.oldpeak|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="slope">Slope of peak exercise ST segment (0–2)</label>
+                <input type="number" step="1" id="slope" name="slope" value="{{ form_data.slope|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="ca">Number of major vessels (0–3)</label>
+                <input type="number" step="1" id="ca" name="ca" value="{{ form_data.ca|default_if_none:'' }}">
+            </div>
+            <div class="field">
+                <label for="thal">Thalassemia (1 = normal, 2 = fixed, 3 = reversible)</label>
+                <input type="number" step="1" id="thal" name="thal" value="{{ form_data.thal|default_if_none:'' }}">
+            </div>
+
+            <div class="actions">
+                <a href="{% url 'home' %}" class="ghost-button">
+                    ← Back
+                </a>
+                <button type="submit" class="primary-button">
+                    Run Prediction
+                </button>
+            </div>
+
+            {% if error %}
+                <div class="error">
+                    {{ error }}
+                </div>
+            {% endif %}
+            <div class="hint">
+                Note: this is a demonstration built on a historical dataset and
+                is not a substitute for professional medical judgement.
+            </div>
+        </form>
+    </section>
+
+    <aside class="panel result-panel">
+        <div class="badge">
+            <span>Model</span>
+            <span>•</span>
+            <span>SVM (RBF kernel)</span>
+        </div>
+        <h2 class="result-title">Prediction</h2>
+
+        {% if result %}
+            {% if result == "No Heart Disease" %}
+                <div class="result-pill negative">
+                    {{ result }}
+                </div>
+                <p class="result-note">
+                    The model predicts <strong>no heart disease</strong> given the supplied features.
+                    Always confirm risk with a qualified clinician.
+                </p>
+            {% else %}
+                <div class="result-pill positive">
+                    {{ result }}
+                </div>
+                <p class="result-note">
+                    The model predicts a <strong>risk of heart disease</strong> based on these inputs.
+                    This does not constitute a diagnosis; please seek medical advice.
+                </p>
+            {% endif %}
+        {% else %}
+            <p class="result-note">
+                Submit the form to see the model's prediction. The classifier was
+                trained on the UCI Heart Disease dataset using an SVM with feature
+                standardisation.
+            </p>
+        {% endif %}
+    </aside>
+</div>
+</body>
+</html>
