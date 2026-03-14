@@ -43,6 +43,13 @@ class HeartDiseaseSVM:
                 "Run the training script in `ModelTraining/svm.py` first."
             )
 
+        import __main__
+        from ModelTraining.svm import ScratchLinearSVM, KernelSVM
+
+        # Fix joblib loading when classes were pickled in __main__ (from svm.py script)
+        __main__.ScratchLinearSVM = ScratchLinearSVM
+        __main__.KernelSVM = KernelSVM
+
         bundle: Dict = joblib.load(model_path)
         self.model = bundle["model"]
         self.scaler = bundle["scaler"]
