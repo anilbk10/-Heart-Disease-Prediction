@@ -190,12 +190,13 @@ class KernelSVM:
             A = violaters + non_violaters
             B = errors_violaters + errors_non_violaters
 
-        I, E_i = None, -float("inf")
+        I, E_i = None, 0.0
+        _max_abs_err = -1.0
         J, best_delta = None, -float("inf")
 
         for idx, err in zip(A, B):
-            if abs(err) > abs(E_i):
-                I, E_i = idx, err
+            if abs(err) > _max_abs_err:
+                I, E_i, _max_abs_err = idx, err, abs(err)
 
         for idx, err in zip(A, B):
             if I is not None and idx != I:
@@ -343,7 +344,7 @@ def train_and_compare_models(export_default: str = "linear") -> None:
 
     # 2) From-scratch RBF Kernel SVM (dual / SMO style)
     y_train_kernel = np.where(y_train == 0, -1, 1).astype(float)
-    rbf = KernelSVM(C=1.0, tol=1e-3, max_iter=1000, kernel="rbf", gamma=1.0)
+    rbf = KernelSVM(C=1.0, tol=1e-3, max_iter=3000, kernel="rbf", gamma=0.1)
     rbf.fit(X_train_scaled, y_train_kernel)
     rbf_pred = rbf.predict(X_test_scaled)
     _print_report("Scratch RBF Kernel SVM", y_test, rbf_pred)
