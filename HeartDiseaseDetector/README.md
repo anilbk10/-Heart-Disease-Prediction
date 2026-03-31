@@ -1,7 +1,7 @@
 ## HeartDiseaseDetector
-[View Project on GitHub](https://github.com/anilbk10/-Heart-Disease-Prediction) 
+[View Project on GitHub](https://github.com/anilbk10/-Heart-Disease-Prediction/tree/main/HeartDiseaseDetector) 
 github link
-(https://github.com/anilbk10/-Heart-Disease-Prediction)
+(https://github.com/anilbk10/-Heart-Disease-Prediction/tree/main/HeartDiseaseDetector)
 
 A small Django web application that demonstrates **heart disease prediction**
 using a Support Vector Machine (SVM) trained on the **UCI Heart Disease**
