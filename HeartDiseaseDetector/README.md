@@ -1,5 +1,5 @@
 ## HeartDiseaseDetector
-
+[View Project on GitHub](https://github.com/anilbk10/-Heart-Disease-Prediction)
 A small Django web application that demonstrates **heart disease prediction**
 using a Support Vector Machine (SVM) trained on the **UCI Heart Disease**
 dataset (`heart.csv`).
